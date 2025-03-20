@@ -1,0 +1,21 @@
+User ID,Python,SQL,Data Analysis,Machine Learning,Cloud Computing,Job Title
+1,1,1,1,1,0,Data Scientist
+2,1,1,1,0,0,Data Analyst
+3,1,1,0,0,1,Data Engineer
+4,1,0,0,0,1,Software Engineer
+5,0,1,1,0,0,Business Analyst
+6,0,1,0,0,0,Database Administrator
+7,1,0,1,1,0,Machine Learning Engineer
+8,1,1,1,1,1,AI Engineer
+9,0,0,1,0,0,Marketing Analyst
+10,1,0,0,0,0,Python Developer
+11,0,1,0,0,1,Cloud Database Engineer
+12,1,1,0,0,0,ETL Developer
+13,1,0,1,0,0,Research Analyst
+14,0,1,1,0,0,Financial Analyst
+15,1,1,1,0,1,Big Data Engineer
+16,1,0,0,1,0,AI Researcher
+17,0,0,0,1,1,Cloud Solutions Architect
+18,1,1,0,1,0,Data Visualization Specialist
+19,0,1,1,0,1,Data Warehouse Engineer
+20,1,0,1,0,1,DevOps Engineer
