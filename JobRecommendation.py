@@ -6,16 +6,15 @@ from sklearn.neighbors import NearestNeighbors
 class JobRecommender:
     def __init__(self, data_path=None):
         """
-        Initialize the job recommender system.
-        If no path is provided, looks for data/job_database.csv
+        Initialize with custom data path or default to data/job_data.csv
         """
-        self.data_path = data_path if data_path else Path(__file__).parent / "data" / "job_database.csv"
+        self.data_path = data_path if data_path else Path(__file__).parent / "data" / "job_data.csv"
         self._validate_data_path()
         self.df = self._load_data()
         self.skill_columns = self._get_skill_columns()
         
     def _validate_data_path(self):
-        """Ensure data file exists"""
+        """Ensure data file exists and is CSV"""
         if not os.path.exists(self.data_path):
             raise FileNotFoundError(f"Data file not found at: {self.data_path}")
         if not self.data_path.suffix == '.csv':
@@ -34,16 +33,16 @@ class JobRecommender:
             raise ValueError(f"Error loading data: {str(e)}")
 
     def _get_skill_columns(self):
-        """Identify skill columns dynamically"""
+        """Dynamically identify skill columns"""
         return [col for col in self.df.columns 
                if col not in ['Job_Title', 'Job_Type']]
 
     def recommend(self, job_type, user_skills, n_recommendations=3):
         """
-        Get job recommendations for a specific job type
+        Get job recommendations for specific job type
         
         Args:
-            job_type: Category of jobs to recommend from
+            job_type: Category of jobs (e.g., 'Data', 'Engineering')
             user_skills: Dict of {skill_name: level} (0-4)
             n_recommendations: Number of jobs to return
             
