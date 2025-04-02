@@ -12,7 +12,6 @@ class JobRecommender:
         self._prepare_model()
     
     def _prepare_model(self):
-        """Prepare KNN model with normalized data"""
         X = self.df[self.skills]
         self.scaler.fit(X)
         X_scaled = self.scaler.transform(X)
@@ -20,19 +19,13 @@ class JobRecommender:
         self.model.fit(X_scaled)
     
     def recommend(self, user_skills, filters):
-        """Get recommendations with filters"""
-        # Prepare user input
         user_input = np.array([[user_skills.get(skill, 0) for skill in self.skills]])
         user_scaled = self.scaler.transform(user_input)
         
-        # Find nearest neighbors
         distances, indices = self.model.kneighbors(user_scaled)
-        
-        # Get recommendations
         recs = self.df.iloc[indices[0]].copy()
         recs['Match_Score'] = 100 * (1 - distances[0])
         
-        # Apply filters
         if filters['experience'] != 'All':
             recs = recs[recs['Experience'] == filters['experience']]
         if filters['remote']:
