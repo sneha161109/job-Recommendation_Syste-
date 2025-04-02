@@ -1,41 +1,81 @@
-# Step 1: Import Libraries
 import pandas as pd
 from sklearn.neighbors import NearestNeighbors
+import os
 
-# Step 2: Load the Dataset
-data = pd.read_csv('job_data.csv')
+def load_data():
+    """Load the job data"""
+    if not os.path.exists('job_data.csv'):
+        print("Error: Job data file not found!")
+        return None, None
+    
+    try:
+        data = pd.read_csv('job_data.csv')
+        required_columns = ['Python', 'SQL', 'Data Analysis', 'Machine Learning', 'Cloud Computing', 'Job Title']
+        if not all(col in data.columns for col in required_columns):
+            print("Error: Required columns missing in the dataset!")
+            return None, None
+        return data[required_columns[:-1]], data['Job Title']
+    except Exception as e:
+        print(f"Error loading data: {str(e)}")
+        return None, None
 
-# Step 3: Separate Features and Target
-X = data[['Python', 'SQL', 'Data Analysis', 'Machine Learning', 'Cloud Computing']]  # Features
-y = data['Job Title']  # Target
+def train_model(X):
+    """Train the recommendation model"""
+    model = NearestNeighbors(n_neighbors=5, metric='hamming')
+    model.fit(X)
+    return model
 
-# Step 4: Train the Nearest Neighbors Model
-model = NearestNeighbors(n_neighbors=5, metric='hamming')  # Use Hamming distance for binary data
-model.fit(X)
+def get_user_input():
+    """Get and validate user input"""
+    print("\nPlease rate your skills (1 = Yes, 0 = No):")
+    skills = {}
+    
+    questions = {
+        'Python': "Do you know Python? ",
+        'SQL': "Do you know SQL? ",
+        'Data Analysis': "Do you know Data Analysis? ",
+        'Machine Learning': "Do you know Machine Learning? ",
+        'Cloud Computing': "Do you know Cloud Computing? "
+    }
+    
+    for skill, question in questions.items():
+        while True:
+            try:
+                val = int(input(question))
+                if val not in [0, 1]:
+                    raise ValueError
+                skills[skill] = val
+                break
+            except ValueError:
+                print("Invalid input! Please enter 1 (Yes) or 0 (No).")
+    
+    return [[skills['Python'], skills['SQL'], skills['Data Analysis'], 
+            skills['Machine Learning'], skills['Cloud Computing']]]
 
-# Step 5: Create a Recommendation Function
-def recommend_jobs(python, sql, data_analysis, machine_learning, cloud_computing):
-    user_input = [[python, sql, data_analysis, machine_learning, cloud_computing]]  # Create a feature vector
-    distances, indices = model.kneighbors(user_input)  # Find nearest neighbors
-    recommended_jobs = y.iloc[indices[0]].tolist()  # Get job titles of nearest neighbors
-    return recommended_jobs
+def main():
+    print("\n" + "="*50)
+    print("JOB RECOMMENDATION SYSTEM".center(50))
+    print("="*50)
+    
+    X, y = load_data()
+    if X is None or y is None:
+        return
+    
+    model = train_model(X)
+    user_input = get_user_input()
+    
+    try:
+        distances, indices = model.kneighbors(user_input)
+        print("\nRecommended Jobs:")
+        for i, job in enumerate(y.iloc[indices[0]].tolist(), 1):
+            print(f"{i}. {job}")
+        
+        print("\nMatching Job Details:")
+        matched_data = pd.concat([y.iloc[indices[0]], X.iloc[indices[0]]], axis=1)
+        print(matched_data.to_string(index=False))
+        
+    except Exception as e:
+        print(f"\nError generating recommendations: {str(e)}")
 
-# Step 6: Take User Input
-print("Welcome to the Job Recommendation System!")
-print("Please answer the following questions with 1 (Yes) or 0 (No).")
-
-python_skill = int(input("Do you know Python? (1 for Yes, 0 for No): "))
-sql_skill = int(input("Do you know SQL? (1 for Yes, 0 for No): "))
-data_analysis_skill = int(input("Do you know Data Analysis? (1 for Yes, 0 for No): "))
-machine_learning_skill = int(input("Do you know Machine Learning? (1 for Yes, 0 for No): "))
-cloud_computing_skill = int(input("Do you know Cloud Computing? (1 for Yes, 0 for No): "))
-
-# Step 7: Validate Input
-if not all(skill in [0, 1] for skill in [python_skill, sql_skill, data_analysis_skill, machine_learning_skill, cloud_computing_skill]):
-    print("Invalid input! Please enter 1 (Yes) or 0 (No).")
-else:
-    # Step 8: Recommend Jobs
-    recommended_jobs = recommend_jobs(python_skill, sql_skill, data_analysis_skill, machine_learning_skill, cloud_computing_skill)
-    print("Recommended Jobs:")
-    for job in recommended_jobs:
-        print(f"- {job}")
+if __name__ == "__main__":
+    main()
