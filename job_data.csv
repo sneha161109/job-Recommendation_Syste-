@@ -1,11 +1,8 @@
-Job Title,Python,SQL,R,Java,JavaScript,DataViz,Stats,ML,DL,Cloud,AWS,Azure,GCP,Spark,Kafka,Experience,Remote,Industry
-Data Scientist,4,3,2,0,0,3,4,3,2,2,1,0,1,1,0,Senior,1,Tech
-ML Engineer,4,3,0,0,0,0,3,4,4,3,2,1,0,0,0,Senior,1,Tech
-Data Analyst,3,4,2,0,0,4,3,0,0,0,0,0,0,0,0,Entry,1,Finance
-Data Engineer,4,4,0,2,0,0,0,0,0,3,2,1,0,4,3,Mid,1,Tech
-AI Researcher,4,1,0,0,0,0,4,4,4,0,0,0,0,0,0,Senior,0,Academia
-Cloud Architect,1,3,0,3,1,0,0,0,0,4,4,3,1,0,0,Senior,1,Tech
-DevOps Engineer,3,1,0,3,2,0,0,0,0,4,4,2,1,0,0,Mid,1,Tech
-Data Visualization Spec,3,3,2,0,3,4,2,0,0,0,0,0,0,0,0,Mid,1,Marketing
-Big Data Engineer,4,4,0,2,0,0,0,0,0,3,2,1,0,4,3,Senior,1,Tech
-AI/ML Specialist,4,2,0,0,0,0,3,4,4,2,1,0,1,0,0,Senior,1,Healthcare
+Job Title,Python,SQL,Data_Analysis,Machine_Learning,Cloud
+Data Scientist,1,1,1,1,0
+Data Analyst,1,1,1,0,0
+Data Engineer,1,1,0,0,1
+ML Engineer,1,0,0,1,1
+Business Analyst,0,1,1,0,0
+Python Developer,1,0,0,0,0
+Cloud Engineer,0,1,0,0,1
