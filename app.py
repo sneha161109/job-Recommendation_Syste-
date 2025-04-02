@@ -17,16 +17,16 @@ def main():
         options=recommender.df['Job_Type'].unique()
     )
     
-    # Skill input
-    st.sidebar.header("Your Skills (0-4)")
+    # Skill input with checkboxes
+    st.sidebar.header("Your Skills")
     user_skills = {}
     for skill in recommender.skill_columns:
-        user_skills[skill] = st.sidebar.slider(
+        # Using checkboxes (1 if checked, 0 if not)
+        user_skills[skill] = 1 if st.sidebar.checkbox(
             skill.replace('_', ' '),
-            min_value=0,
-            max_value=4,
-            value=0
-        )
+            value=False,
+            key=skill
+        ) else 0
     
     # Get recommendations
     if st.button("Find Jobs"):
