@@ -1,31 +1,11 @@
-User ID,Python,SQL,Data Analysis,Machine Learning,Cloud Computing,Job Title,Salary Range,Experience Level
-1,1,1,1,1,0,Data Scientist,"$90,000-$120,000",Mid
-2,1,1,1,0,0,Data Analyst,"$60,000-$85,000",Entry
-3,1,1,0,0,1,Data Engineer,"$95,000-$130,000",Mid
-4,1,0,0,0,1,Software Engineer,"$80,000-$110,000",Entry
-5,0,1,1,0,0,Business Analyst,"$55,000-$75,000",Entry
-6,0,1,0,0,0,Database Administrator,"$70,000-$90,000",Mid
-7,1,0,1,1,0,Machine Learning Engineer,"$100,000-$140,000",Senior
-8,1,1,1,1,1,AI Engineer,"$110,000-$150,000",Senior
-9,0,0,1,0,0,Marketing Analyst,"$50,000-$70,000",Entry
-10,1,0,0,0,0,Python Developer,"$75,000-$95,000",Mid
-11,0,1,0,0,1,Cloud Database Engineer,"$85,000-$115,000",Mid
-12,1,1,0,0,0,ETL Developer,"$80,000-$100,000",Mid
-13,1,0,1,0,0,Research Analyst,"$65,000-$85,000",Entry
-14,0,1,1,0,0,Financial Analyst,"$70,000-$90,000",Mid
-15,1,1,1,0,1,Big Data Engineer,"$105,000-$135,000",Senior
-16,1,0,0,1,0,AI Researcher,"$95,000-$125,000",Senior
-17,0,0,0,1,1,Cloud Solutions Architect,"$120,000-$160,000",Senior
-18,1,1,0,1,0,Data Visualization Specialist,"$85,000-$110,000",Mid
-19,0,1,1,0,1,Data Warehouse Engineer,"$90,000-$120,000",Mid
-20,1,0,1,0,1,DevOps Engineer,"$100,000-$140,000",Senior
-21,1,1,1,0,0,BI Analyst,"$75,000-$95,000",Mid
-22,0,1,0,1,0,Analytics Engineer,"$85,000-$110,000",Mid
-23,1,0,0,1,1,MLEngineer - Cloud,"$115,000-$145,000",Senior
-24,1,1,1,1,0,Research Scientist,"$90,000-$120,000",Senior
-25,0,0,1,1,0,Marketing Data Scientist,"$80,000-$105,000",Mid
-26,1,1,0,0,1,Cloud Data Engineer,"$95,000-$125,000",Mid
-27,0,1,1,1,0,Financial Data Scientist,"$85,000-$115,000",Mid
-28,1,0,1,1,1,AI/ML Specialist,"$110,000-$150,000",Senior
-29,1,1,0,1,1,Data Architect,"$115,000-$155,000",Senior
-30,1,1,1,0,0,Data Product Manager,"$95,000-$125,000",Senior
+Job Title,Python,SQL,R,Java,JavaScript,DataViz,Stats,ML,DL,Cloud,AWS,Azure,GCP,Spark,Kafka,Experience,Remote,Industry
+Data Scientist,4,3,2,0,0,3,4,3,2,2,1,0,1,1,0,Senior,1,Tech
+ML Engineer,4,3,0,0,0,0,3,4,4,3,2,1,0,0,0,Senior,1,Tech
+Data Analyst,3,4,2,0,0,4,3,0,0,0,0,0,0,0,0,Entry,1,Finance
+Data Engineer,4,4,0,2,0,0,0,0,0,3,2,1,0,4,3,Mid,1,Tech
+AI Researcher,4,1,0,0,0,0,4,4,4,0,0,0,0,0,0,Senior,0,Academia
+Cloud Architect,1,3,0,3,1,0,0,0,0,4,4,3,1,0,0,Senior,1,Tech
+DevOps Engineer,3,1,0,3,2,0,0,0,0,4,4,2,1,0,0,Mid,1,Tech
+Data Visualization Spec,3,3,2,0,3,4,2,0,0,0,0,0,0,0,0,Mid,1,Marketing
+Big Data Engineer,4,4,0,2,0,0,0,0,0,3,2,1,0,4,3,Senior,1,Tech
+AI/ML Specialist,4,2,0,0,0,0,3,4,4,2,1,0,1,0,0,Senior,1,Healthcare
