@@ -1,4 +1,4 @@
-streamlit
-scikit-learn
-numpy
-pandas
+streamlit>=1.44
+scikit-learn>=1.4
+pandas>=2.2
+numpy>=2.2
