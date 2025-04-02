@@ -1,36 +1,24 @@
 import pandas as pd
-import numpy as np
 from sklearn.neighbors import NearestNeighbors
-from sklearn.preprocessing import MinMaxScaler
 
-class JobRecommender:
+class SkillRecommender:
     def __init__(self, data_path='job_data.csv'):
-        self.df = pd.read_csv(data_path)
-        self.skills = ['Python','SQL','R','Java','JavaScript','DataViz',
-                      'Stats','ML','DL','Cloud','AWS','Azure','GCP','Spark','Kafka']
-        self.scaler = MinMaxScaler()
-        self._prepare_model()
+        self.jobs = pd.read_csv(data_path)
+        self.skills = [col for col in self.jobs.columns if col != 'Job Title']
+        self.model = NearestNeighbors(n_neighbors=3, metric='hamming')
+        self.model.fit(self.jobs[self.skills])
     
-    def _prepare_model(self):
-        X = self.df[self.skills]
-        self.scaler.fit(X)
-        X_scaled = self.scaler.transform(X)
-        self.model = NearestNeighbors(n_neighbors=5, metric='cosine')
-        self.model.fit(X_scaled)
-    
-    def recommend(self, user_skills, filters):
-        user_input = np.array([[user_skills.get(skill, 0) for skill in self.skills]])
-        user_scaled = self.scaler.transform(user_input)
-        
-        distances, indices = self.model.kneighbors(user_scaled)
-        recs = self.df.iloc[indices[0]].copy()
-        recs['Match_Score'] = 100 * (1 - distances[0])
-        
-        if filters['experience'] != 'All':
-            recs = recs[recs['Experience'] == filters['experience']]
-        if filters['remote']:
-            recs = recs[recs['Remote'] == 1]
-        if filters['industry'] != 'All':
-            recs = recs[recs['Industry'] == filters['industry']]
+    def recommend(self, user_skills):
+        """Recommend jobs based on skill match"""
+        try:
+            # Convert user skills to binary vector
+            input_vector = [[user_skills.get(skill, 0) for skill in self.skills]]
+            distances, indices = self.model.kneighbors(input_vector)
             
-        return recs.sort_values('Match_Score', ascending=False)
+            # Prepare results
+            results = self.jobs.iloc[indices[0]].copy()
+            results['Match_Score'] = (1 - distances[0]) * 100
+            return results[['Job Title', 'Match_Score']]
+        except Exception as e:
+            print(f"Recommendation error: {e}")
+            return pd.DataFrame(columns=['Job Title', 'Match_Score'])
