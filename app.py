@@ -1,84 +1,81 @@
 import streamlit as st
-import pandas as pd
-from sklearn.neighbors import NearestNeighbors
-import os
+from jobrecommendation import AdvancedJobRecommender, ALL_SKILLS
 
-# Set page config
-st.set_page_config(page_title="Job Recommendation System", page_icon="💼", layout="wide")
+# Initialize
+recommender = AdvancedJobRecommender()
 
-@st.cache_data
-def load_data():
-    """Load and cache the job data"""
-    if not os.path.exists('job_data.csv'):
-        st.error("Job data file not found! Please ensure 'job_data.csv' exists.")
-        return None
-    try:
-        data = pd.read_csv('job_data.csv')
-        required_columns = ['Python', 'SQL', 'Data Analysis', 'Machine Learning', 'Cloud Computing', 'Job Title']
-        if not all(col in data.columns for col in required_columns):
-            st.error("Required columns missing in the dataset!")
-            return None
-        return data
-    except Exception as e:
-        st.error(f"Error loading data: {str(e)}")
-        return None
+def get_skill_proficiency():
+    """Interactive skill proficiency input"""
+    st.sidebar.header("🛠 Skill Mastery Assessment")
+    st.sidebar.markdown("Rate your proficiency for each skill (0 = None, 4 = Expert)")
+    
+    skills = {}
+    for category, category_skills in SKILL_CATEGORIES.items():
+        with st.sidebar.expander(f"**{category}**", expanded=True):
+            for skill in category_skills:
+                skills[skill] = st.slider(
+                    skill,
+                    min_value=0,
+                    max_value=4,
+                    value=0,
+                    step=1,
+                    help=f"0: None | 1: Basic | 2: Intermediate | 3: Advanced | 4: Expert"
+                )
+    return skills
 
-def train_model(X):
-    """Train and cache the recommendation model"""
-    model = NearestNeighbors(n_neighbors=5, metric='hamming')
-    model.fit(X)
-    return model
+def display_recommendations(recommendations):
+    """Interactive results visualization"""
+    tab1, tab2, tab3 = st.tabs(["Best Matches", "Skill Analysis", "Career Pathways"])
+    
+    with tab1:
+        for _, job in recommendations.iterrows():
+            with st.container():
+                cols = st.columns([1, 4])
+                cols[0].metric("Match", f"{job['Match_Score']:.1f}%")
+                
+                with cols[1]:
+                    st.subheader(job['Job Title'])
+                    prog_cols = st.columns(3)
+                    prog_cols[0].progress(job['Match_Score']/100, text="Fit")
+                    prog_cols[1].progress(job['Skill_Coverage'], text="Coverage")
+                    prog_cols[2].markdown(f"**Level:** {job['Experience']}")
+                    
+                    if job['Remote']:
+                        st.success("🌍 Remote position available")
+    
+    with tab2:
+        st.vega_lite_chart({
+            "mark": {"type": "circle", "size": 100},
+            "encoding": {
+                "x": {"field": "Match_Score", "type": "quantitative"},
+                "y": {"field": "Skill_Coverage", "type": "quantitative"},
+                "color": {"field": "Experience", "type": "nominal"}
+            },
+            "data": recommendations.to_dict(orient='records')
+        }, use_container_width=True)
+    
+    with tab3:
+        st.write("Skill development pathways...")  # Implement pathway logic
 
 def main():
-    st.title("💼 Job Recommendation System")
-    st.markdown("### Discover your ideal job based on your skills")
+    # UI Config
+    st.set_page_config(layout="wide")
     
-    # Load data
-    data = load_data()
-    if data is None:
-        return
+    # Get user input
+    skills = get_skill_proficiency()
     
-    # Prepare features and target
-    X = data[['Python', 'SQL', 'Data Analysis', 'Machine Learning', 'Cloud Computing']]
-    y = data['Job Title']
+    # Filters
+    filters = {
+        'experience': st.selectbox("Target Level", ['All', 'Entry', 'Mid', 'Senior']),
+        'remote_only': st.toggle("Remote Only", True),
+        'n_recommendations': st.slider("Number of Recommendations", 3, 20, 10)
+    }
     
-    # Train model
-    model = train_model(X)
-    
-    # User input section
-    st.sidebar.header("Your Skills Profile")
-    st.sidebar.markdown("Please indicate which skills you have (1 = Yes, 0 = No)")
-    
-    with st.sidebar.form("skills_form"):
-        python_skill = st.radio("Python", [1, 0], horizontal=True)
-        sql_skill = st.radio("SQL", [1, 0], horizontal=True)
-        data_analysis_skill = st.radio("Data Analysis", [1, 0], horizontal=True)
-        machine_learning_skill = st.radio("Machine Learning", [1, 0], horizontal=True)
-        cloud_computing_skill = st.radio("Cloud Computing", [1, 0], horizontal=True)
-        submitted = st.form_submit_button("Get Recommendations")
-    
-    # Recommendation logic
-    if submitted:
-        user_input = [[python_skill, sql_skill, data_analysis_skill, 
-                      machine_learning_skill, cloud_computing_skill]]
-        
-        try:
-            distances, indices = model.kneighbors(user_input)
-            recommended_jobs = y.iloc[indices[0]].tolist()
-            
-            st.success("🎯 Recommended Jobs For You:")
-            cols = st.columns(2)
-            for i, job in enumerate(recommended_jobs):
-                cols[i%2].markdown(f"✅ **{job}**")
-            
-            # Show matching skills
-            st.markdown("---")
-            st.markdown("### Your Skills Match With:")
-            matched_data = data.iloc[indices[0]]
-            st.dataframe(matched_data, hide_index=True)
-            
-        except Exception as e:
-            st.error(f"Error generating recommendations: {str(e)}")
+    # Generate recommendations
+    if st.button("🔍 Find Ideal Jobs", type="primary"):
+        with st.spinner("Finding your perfect matches..."):
+            recommendations = recommender.recommend_jobs(skills, filters)
+            display_recommendations(recommendations)
 
 if __name__ == "__main__":
     main()
