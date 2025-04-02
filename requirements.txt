@@ -1,23 +1,4 @@
-# Core Requirements
-streamlit==1.44.1
-scikit-learn==1.4.0
-pandas==2.2.1
-numpy==2.2.4
-plotly==5.18.0
-
-# Optional Visualization
-altair==5.5.0
-vega-lite==5.15.1
-
-# Data Processing
-python-dateutil==2.9.0
-pytz==2024.1
-
-# Utilities
-tqdm==4.66.2
-joblib==1.4.0
-
-# Development Extras
-black==24.4.2
-flake8==7.0.0
-pytest==8.1.1
+streamlit>=1.0
+pandas>=1.0
+numpy>=1.0
+scikit-learn>=1.0
