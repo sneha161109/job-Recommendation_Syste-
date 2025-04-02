@@ -19,7 +19,7 @@ def main():
     selected_type = st.selectbox(
         "Select your desired job category:",
         list(JOB_TYPES.keys())
-    
+        )
     # Dynamic skill selection
     st.sidebar.header("Skill Assessment")
     user_skills = {}
