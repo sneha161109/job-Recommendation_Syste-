@@ -1,5 +1,5 @@
 import streamlit as st
-
+from JobRecommendation import SkillRecommender  # Make sure this matches your filename
 
 def main():
     st.title("🔍 Skill-Based Job Recommender")
