@@ -1,8 +1,11 @@
-Job Title,Python,SQL,Data_Analysis,Machine_Learning,Cloud
-Data Scientist,1,1,1,1,0
-Data Analyst,1,1,1,0,0
-Data Engineer,1,1,0,0,1
-ML Engineer,1,0,0,1,1
-Business Analyst,0,1,1,0,0
-Python Developer,1,0,0,0,0
-Cloud Engineer,0,1,0,0,1
+Job_Title,Job_Type,Python,SQL,Java,JavaScript,Data_Analysis,Machine_Learning,Cloud,AI,DevOps,Web_Dev,Mobile_Dev,Cybersecurity
+Senior Data Scientist,Data,1,1,0,0,1,1,0,1,0,0,0,0
+Data Analyst,Data,1,1,0,0,1,0,0,0,0,0,0,0
+ML Engineer,Data,1,1,0,0,1,1,1,1,0,0,0,0
+Backend Developer,Engineering,1,1,1,0,0,0,1,0,1,0,0,0
+Frontend Developer,Engineering,0,0,0,1,0,0,0,0,0,1,0,0
+DevOps Engineer,Engineering,1,1,0,0,0,0,1,0,1,0,0,0
+Cybersecurity Specialist,Security,1,1,0,0,0,0,1,0,0,0,0,1
+iOS Developer,Mobile,0,0,0,0,0,0,0,0,0,0,1,0
+AI Researcher,Data,1,1,0,0,1,1,0,1,0,0,0,0
+Cloud Architect,Engineering,1,1,0,0,0,0,1,0,1,0,0,0
