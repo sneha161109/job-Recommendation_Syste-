@@ -1,7 +1,14 @@
 import streamlit as st
-from jobrecommendation import AdvancedJobRecommender, ALL_SKILLS, TECH_SKILLS, DATA_SKILLS, CLOUD_SKILLS, BIG_DATA_SKILLS
 import pandas as pd
 import plotly.express as px
+from jobrecommendation import (
+    AdvancedJobRecommender,
+    ALL_SKILLS,
+    TECH_SKILLS,
+    DATA_SKILLS,
+    CLOUD_SKILLS,
+    BIG_DATA_SKILLS
+)
 
 # Initialize recommender
 recommender = AdvancedJobRecommender()
@@ -17,8 +24,8 @@ SKILL_CATEGORIES = {
 def setup_page():
     """Configure page settings and styles"""
     st.set_page_config(
-        page_title="Career Compass",
-        page_icon="🧭",
+        page_title="Job Recommendation Engine",
+        page_icon="💼",
         layout="wide",
         initial_sidebar_state="expanded"
     )
@@ -33,9 +40,6 @@ def setup_page():
         transition: transform 0.2s;
         border-left: 5px solid #4f46e5;
     }
-    .match-card:hover {
-        transform: translateY(-3px);
-    }
     .skill-pill {
         display: inline-block;
         padding: 0.25rem 0.75rem;
@@ -48,14 +52,15 @@ def setup_page():
     </style>
     """, unsafe_allow_html=True)
 
-def get_user_skills():
-    """Interactive skill proficiency input with guided assessment"""
-    st.sidebar.header("🧠 Skill Assessment")
+def get_skill_proficiency():
+    """Interactive skill proficiency input"""
+    st.sidebar.header("🛠 Skill Mastery Assessment")
+    st.sidebar.markdown("Rate your proficiency (0-4):")
     
-    with st.sidebar.expander("ℹ️ How to rate your skills", expanded=False):
+    with st.sidebar.expander("Skill Level Guide", expanded=False):
         st.markdown("""
         - **0**: No experience
-        - **1**: Basic (can complete simple tasks)
+        - **1**: Basic (simple tasks)
         - **2**: Intermediate (work independently)
         - **3**: Advanced (can mentor others)
         - **4**: Expert (industry-leading)
@@ -69,7 +74,7 @@ def get_user_skills():
                     skill,
                     options=[0, 1, 2, 3, 4],
                     value=0,
-                    help=f"Rate your {skill} proficiency"
+                    help=f"Your {skill} proficiency level"
                 )
     return skills
 
@@ -81,7 +86,7 @@ def get_user_preferences():
         'experience': st.selectbox(
             "Experience Level",
             ['All', 'Entry', 'Mid', 'Senior'],
-            help="Target job seniority level"
+            index=0
         ),
         'remote_only': st.toggle(
             "Remote Only", 
@@ -95,12 +100,11 @@ def get_user_preferences():
         ),
         'n_recommendations': st.slider(
             "Number of Recommendations",
-            3, 15, 8,
-            help="How many jobs to recommend"
+            3, 15, 5,
+            help="How many jobs to show"
         )
     }
     
-    # Only apply industry filter if not 'Any'
     if preferences['industry'] == 'Any':
         preferences.pop('industry')
     
@@ -109,11 +113,10 @@ def get_user_preferences():
 def display_recommendations(recommendations):
     """Interactive visualization of job matches"""
     if recommendations.empty:
-        st.warning("No jobs match your criteria. Try adjusting your filters or skills.")
+        st.warning("No jobs match your criteria. Try adjusting your filters.")
         return
     
     st.header("✨ Your Top Matches")
-    st.caption(f"Showing {len(recommendations)} positions sorted by best fit")
     
     # Main recommendations view
     for _, job in recommendations.iterrows():
@@ -141,48 +144,22 @@ def display_recommendations(recommendations):
             # Skill gap analysis
             with st.expander("🔍 See skill requirements and gaps"):
                 gap_cols = st.columns([1, 3])
-                
                 with gap_cols[0]:
                     st.metric("Skill Coverage", f"{job['Skill_Coverage']:.0f}%")
                     st.progress(job['Skill_Coverage']/100)
-                
                 with gap_cols[1]:
-                    if isinstance(job['Missing_Skills'], list) and len(job['Missing_Skills']) > 0:
-                        st.warning(f"**To improve:** {', '.join(job['Missing_Skills'])}")
+                    if job['Missing_Skills']:
+                        st.warning(f"**Skills to improve:** {', '.join(job['Missing_Skills'])}")
                     else:
                         st.success("You meet all required skills!")
-    
-    # Analytics tabs
-    tab1, tab2 = st.tabs(["📊 Match Analysis", "📈 Skill Insights"])
-    
-    with tab1:
-        fig = px.scatter(
-            recommendations,
-            x='Match_Score',
-            y='Skill_Coverage',
-            color='Experience',
-            hover_name='Job Title',
-            size='Match_Score',
-            labels={
-                'Match_Score': 'Overall Match (%)',
-                'Skill_Coverage': 'Skill Coverage (%)'
-            }
-        )
-        st.plotly_chart(fig, use_container_width=True)
-    
-    with tab2:
-        st.subheader("Most Required Skills in Matches")
-        skill_dist = recommender.get_skill_distribution(recommendations)
-        st.bar_chart(skill_dist)
 
 def main():
     setup_page()
-    
-    st.title("🧭 Career Compass")
-    st.markdown("Discover your ideal tech role based on your skills and preferences")
+    st.title("💼 Advanced Job Recommender")
+    st.markdown("Find your ideal role based on your skills and preferences")
     
     # Get user input
-    skills = get_user_skills()
+    skills = get_skill_proficiency()
     preferences = get_user_preferences()
     
     # Generate recommendations
