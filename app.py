@@ -1,39 +1,62 @@
 import streamlit as st
-from JobRecommendation import SkillRecommender  # Make sure this matches your filename
+from JobRecommendation import JobRecommender
+
+# Initialize recommender
+recommender = JobRecommender()
+
+# Job type selection
+JOB_TYPES = {
+    'Data': ['Data Scientist', 'Data Analyst', 'ML Engineer'],
+    'Engineering': ['Backend Developer', 'Frontend Developer', 'DevOps Engineer'],
+    'Security': ['Cybersecurity Specialist'],
+    'Mobile': ['iOS Developer', 'Android Developer']
+}
 
 def main():
-    st.title("🔍 Skill-Based Job Recommender")
+    st.title("🧠 Smart Job Recommender Pro")
     
-    # Initialize recommender
-    try:
-        recommender = SkillRecommender()
-    except Exception as e:
-        st.error(f"Failed to load: {e}")
-        return
+    # Job type selection
+    selected_type = st.selectbox(
+        "Select your desired job category:",
+        list(JOB_TYPES.keys())
     
-    # Skill input
-    st.sidebar.header("Your Skills")
-    user_skills = {
-        'Python': st.sidebar.checkbox("Python"),
-        'SQL': st.sidebar.checkbox("SQL"),
-        'Data_Analysis': st.sidebar.checkbox("Data Analysis"),
-        'Machine_Learning': st.sidebar.checkbox("Machine Learning"),
-        'Cloud': st.sidebar.checkbox("Cloud Computing")
+    # Dynamic skill selection
+    st.sidebar.header("Skill Assessment")
+    user_skills = {}
+    
+    skill_groups = {
+        'Programming': ['Python', 'Java', 'JavaScript'],
+        'Data': ['SQL', 'Data_Analysis', 'Machine_Learning', 'AI'],
+        'Infrastructure': ['Cloud', 'DevOps'],
+        'Specialized': ['Web_Dev', 'Mobile_Dev', 'Cybersecurity']
     }
     
-    # Get recommendations
-    if st.button("Find Matching Jobs"):
-        results = recommender.recommend({k: int(v) for k, v in user_skills.items()})
+    for group, skills in skill_groups.items():
+        with st.sidebar.expander(group):
+            for skill in skills:
+                user_skills[skill] = st.select_slider(
+                    skill,
+                    options=[0, 1, 2, 3, 4],
+                    value=0,
+                    help="0=None, 1=Basic, 2=Intermediate, 3=Advanced, 4=Expert"
+                )
+    
+    if st.button("Get Recommendations"):
+        results = recommender.recommend(
+            job_type=selected_type,
+            user_skills=user_skills
+        )
         
         if not results.empty:
-            st.success("Top Job Matches:")
+            st.success(f"Top {selected_type} Roles For You:")
             for _, row in results.iterrows():
-                st.write(f"### {row['Job Title']}")
-                st.progress(int(row['Match_Score']))
-                st.write(f"**Match:** {row['Match_Score']:.0f}%")
-                st.write("---")
+                with st.expander(f"{row['Job_Title']} - {row['Match_Score']:.0f}% Match"):
+                    st.write("**Required Skills:**")
+                    for skill in recommender.skill_columns:
+                        if row[skill] > 0:
+                            st.write(f"- {skill.replace('_', ' ')} (Level {row[skill]})")
         else:
-            st.warning("No matches found. Try different skills.")
+            st.warning("No matches found. Try adjusting your filters.")
 
 if __name__ == "__main__":
     main()
